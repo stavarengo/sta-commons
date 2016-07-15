@@ -1,0 +1,26 @@
+{
+    "name": "stavarengo/sta-commons",
+    "description": "",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Rafael Stavarengo",
+            "email": "faelsta@gmail.com",
+            "homepage": "http://facebook.com/rafael.stavarengo"
+        }
+    ],
+    "require": {
+        "php": "^5.3.3|~7.0",
+        "zendframework/zend-crypt": "^2.5.0 || ^2.7.5 || ^3.0.3",
+        "zendframework/zend-router": "^2.5.0 || ^2.7.5 || ^3.0.3"
+    },
+    "license": "BSD-3-Clause",
+    "autoload": {
+        "psr-4": {
+            "Sta\\Commons\\": "src/Commons/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}
