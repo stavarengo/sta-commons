@@ -12,3 +12,4 @@ public/vendor/
 .vagrant
 composer.phar
 node_modules
+composer.lock
