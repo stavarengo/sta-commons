@@ -72,6 +72,33 @@ class StringUtil
     }
 
     /**
+     * @param string $esCreatorNetworkDescription
+     * @param string $replacement
+     *
+     * @return string
+     */
+    public static function removeContactInformationFromString($esCreatorNetworkDescription, $replacement = '')
+    {
+        // Remove URLs
+        $esCreatorNetworkDescription = preg_replace(
+            '/[a-zA-Z]*[:\/\/]*[A-Za-z0-9\-_]+\.+[A-Za-z0-9\.\/%&=\?\-_]+/i',
+            $replacement,
+            $esCreatorNetworkDescription
+        );
+        // Remove emails
+        $esCreatorNetworkDescription = preg_replace(
+            '/[^@\s]*@[^@\s]*\.[^@\s]*/',
+            $replacement,
+            $esCreatorNetworkDescription
+        );
+        $esCreatorNetworkDescription = preg_replace('/[a-z]+?@/', "$replacement@", $esCreatorNetworkDescription);
+        // Remove telefones
+        $esCreatorNetworkDescription = preg_replace('/[0-9]{3}/', $replacement, $esCreatorNetworkDescription);
+
+        return $esCreatorNetworkDescription;
+    }
+
+    /**
      * @param $string
      *
      * @return string
