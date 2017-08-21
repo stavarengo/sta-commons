@@ -59,7 +59,7 @@ class StringUtil
                 $url = str_ireplace($search, $replace, $url);
             } while (stripos($url, $search) !== false);
         }
-        
+
         if ($maxLength) {
             while (mb_strlen($rawUrl = rawurldecode($url), 'UTF-8') > $maxLength) {
                 $url = mb_substr($url, 0, mb_strlen($url) - 1);
@@ -72,30 +72,27 @@ class StringUtil
     }
 
     /**
-     * @param string $esCreatorNetworkDescription
+     * @param string $string
      * @param string $replacement
      *
      * @return string
      */
-    public static function removeContactInformationFromString($esCreatorNetworkDescription, $replacement = '')
+    public static function removeContactInformationFromString($string, $replacement = '')
     {
+        // Remove emails
+        $string = preg_replace('/[^@\s]+@[^@\s]*\.[^@\s]*/', "$replacement@$replacement.$replacement", $string);
+
         // Remove URLs
-        $esCreatorNetworkDescription = preg_replace(
+        $string = preg_replace(
             '/[a-zA-Z]*[:\/\/]*[A-Za-z0-9\-_]+\.+[A-Za-z0-9\.\/%&=\?\-_]+/i',
             $replacement,
-            $esCreatorNetworkDescription
+            $string
         );
-        // Remove emails
-        $esCreatorNetworkDescription = preg_replace(
-            '/[^@\s]*@[^@\s]*\.[^@\s]*/',
-            $replacement,
-            $esCreatorNetworkDescription
-        );
-        $esCreatorNetworkDescription = preg_replace('/[a-z]+?@/', "$replacement@", $esCreatorNetworkDescription);
-        // Remove telefones
-        $esCreatorNetworkDescription = preg_replace('/[0-9]{3}/', $replacement, $esCreatorNetworkDescription);
 
-        return $esCreatorNetworkDescription;
+        // Remove telefones
+        $string = preg_replace('/[0-9]{3}/', $replacement, $string);
+
+        return $string;
     }
 
     /**
