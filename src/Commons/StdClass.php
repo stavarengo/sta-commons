@@ -7,13 +7,14 @@ use Sta\Commons\Exception\StdClassInvalidArgument;
 class StdClass
 {
 
-    public function __construct(array $initialData = array())
+    public function __construct(array $initialData = [])
     {
         $this->fromArray($initialData);
     }
 
     /**
      * @ignore
+     *
      * @param string $attributeName
      * @param $value
      *
@@ -22,43 +23,52 @@ class StdClass
     public function set($attributeName, $value)
     {
         $method = 'set' . ucfirst($attributeName);
-        if (is_callable(array($this, $method))) {
+        if (is_callable([$this, $method])) {
             $this->$method($value);
+
             return;
         }
 
-        throw new StdClassInvalidArgument('Não existe um método para definir o valor do atributo: "' . $attributeName . '"');
+        throw new StdClassInvalidArgument(
+            'Não existe um método para definir o valor do atributo: "' . $attributeName . '"'
+        );
     }
 
     /**
      * @param $attributeName
+     *
      * @return mixed
      * @throws StdClassInvalidArgument
      */
     public function get($attributeName)
     {
         $method = 'get' . ucfirst($attributeName);
-        if (is_callable(array($this, $method))) {
+        if (is_callable([$this, $method])) {
             return $this->$method();
         }
         $method = 'is' . ucfirst($attributeName);
-        if (is_callable(array($this, $method))) {
+        if (is_callable([$this, $method])) {
             return $this->$method();
         }
 
-        throw new StdClassInvalidArgument('Não existe um método para retornar o valor do atributo: "'
-            . $attributeName . '"');
+        throw new StdClassInvalidArgument(
+            'Não existe um método para retornar o valor do atributo: "'
+            . $attributeName . '"'
+        );
     }
 
     public function fromArray(array $data)
     {
         foreach ($data as $attr => $value) {
+            if ($date = \DateTime::createFromFormat(DATE_ISO8601, $value)) {
+                $value = $date;
+            }
             $this->set($attr, $value);
         }
-        
+
         return $this;
     }
-    
+
     /**
      * @return array
      */
@@ -69,15 +79,18 @@ class StdClass
 
     /**
      * @param $value
+     *
      * @return array
      */
     private function _toArray($value)
     {
-        $result = array();
-        if (is_object($value) || is_array($value)) {
+        $result = [];
+        if ($value instanceof \DateTime) {
+            $result = $value->format(DATE_ISO8601);
+        } else if (is_object($value) || is_array($value)) {
             $isMyOwnInstance = false;
             if (is_object($value)) {
-                $vars            = get_object_vars($value);
+                $vars = get_object_vars($value);
                 $isMyOwnInstance = ($value instanceof StdClass);
             } else {
                 $vars = $value;
