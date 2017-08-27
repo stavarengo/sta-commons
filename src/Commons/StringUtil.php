@@ -187,10 +187,10 @@ class StringUtil
      *
      * @return string[]
      */
-    public static function getPhonesFromString(string $text, int $minimumDigitsToBeConsideredAnPhoneNumber = 6): array
+    public static function getPhonesFromString(string $text, int $minimumDigitsToBeConsideredAnPhoneNumber = 7): array
     {
         $phonesFound = [];
-        $regex       = '/[(+0-9][0-9 ()-+-.]{6,}\b/';
+        $regex       = sprintf('/[(+0-9][0-9 ()-+-.]{%s,}\b/', $minimumDigitsToBeConsideredAnPhoneNumber);
 
         if (preg_match_all($regex, $text, $matches)) {
             $phonesFound = array_filter(
