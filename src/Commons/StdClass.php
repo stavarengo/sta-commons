@@ -68,6 +68,9 @@ class StdClass
     public function fromArray(array $data)
     {
         foreach ($data as $attr => $value) {
+            if ($attr == "__failIfAttributeIsNotEncapsulated") {
+                continue;
+            }
             if (is_string($value) && trim($value) && $date = \DateTime::createFromFormat(DATE_ISO8601, $value)) {
                 $value = $date;
             }
@@ -104,6 +107,9 @@ class StdClass
                 $vars = $value;
             }
             foreach ($vars as $var => $val) {
+                if ($var == "__failIfAttributeIsNotEncapsulated") {
+                    continue;
+                }
                 try {
                     if ($isMyOwnInstance) {
                         $val = $this->get($var);
