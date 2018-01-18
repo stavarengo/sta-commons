@@ -6,6 +6,7 @@ use Sta\Commons\Exception\StdClassInvalidArgument;
 
 class StdClass
 {
+    protected $__failIfAttributeIsNotEncapsulated = true;
 
     public function __construct(array $initialData = [])
     {
@@ -29,16 +30,19 @@ class StdClass
             return;
         }
 
-        throw new StdClassInvalidArgument(
-            'Não existe um método para definir o valor do atributo: "' . $attributeName . '"'
-        );
+        if ($this->__failIfAttributeIsNotEncapsulated) {
+            throw new StdClassInvalidArgument(
+                'Não existe um método para definir o valor do atributo: "' . $attributeName . '"'
+            );
+        }
+
+        $this->$attributeName = $value;
     }
 
     /**
      * @param $attributeName
      *
      * @return mixed
-     * @throws StdClassInvalidArgument
      */
     public function get($attributeName)
     {
@@ -51,16 +55,20 @@ class StdClass
             return $this->$method();
         }
 
-        throw new StdClassInvalidArgument(
-            'Não existe um método para retornar o valor do atributo: "'
-            . $attributeName . '"'
-        );
+        if ($this->__failIfAttributeIsNotEncapsulated) {
+            throw new StdClassInvalidArgument(
+                'Não existe um método para retornar o valor do atributo: "'
+                . $attributeName . '"'
+            );
+        }
+
+        return $this->$attributeName;
     }
 
     public function fromArray(array $data)
     {
         foreach ($data as $attr => $value) {
-            if ($date = \DateTime::createFromFormat(DATE_ISO8601, $value)) {
+            if (is_string($value) && trim($value) && $date = \DateTime::createFromFormat(DATE_ISO8601, $value)) {
                 $value = $date;
             }
             $this->set($attr, $value);
@@ -90,7 +98,7 @@ class StdClass
         } else if (is_object($value) || is_array($value)) {
             $isMyOwnInstance = false;
             if (is_object($value)) {
-                $vars = get_object_vars($value);
+                $vars            = get_object_vars($value);
                 $isMyOwnInstance = ($value instanceof StdClass);
             } else {
                 $vars = $value;
