@@ -11,14 +11,15 @@
     ],
     "require": {
         "php": ">=7.1",
-        "ext-mbstring": "*",
-        "zendframework/zend-crypt": "^2.5.0 || ^2.7.5 || ^3.0",
-        "zendframework/zend-router": "^2.5.0 || ^2.7.5 || ^3.0"
+        "ext-mbstring": "*"
     },
     "license": "BSD-3-Clause",
     "autoload": {
         "psr-4": {
             "Sta\\Commons\\": "src/Commons/"
         }
+    },
+    "suggest": {
+        "zendframework/zend-crypt": "If intent to use \\Sta\\Commons\\CryptQueryParam"
     }
 }
