@@ -8,6 +8,29 @@ use Sta\Commons\Exception\WeDontKnowHowToRecognizePostalCodeFromThisCountry;
 
 class StringUtil
 {
+    public static function getHashTags($string)
+    {
+        if (!$string) {
+            return [];
+        }
+
+        $matches = [];
+        preg_match_all('/#[\\p{L}0-9_]+/u', $string, $matches);
+
+        if (!$matches || !$matches[0]) {
+            return [];
+        }
+
+        $allHashTags = array_map(
+            function ($str) {
+                return ltrim($str, '#');
+            },
+            $matches[0]
+        );
+
+        return $allHashTags;
+    }
+
     /**
      * Formata um número de telefone.
      * Créditos:
@@ -181,6 +204,117 @@ class StringUtil
         }
 
         return $rawUrl;
+    }
+
+    /**
+     * @param $string
+     *
+     * @return string
+     */
+    public static function removeAccents($string)
+    {
+        $array1 = [
+            'á',
+            'à',
+            'â',
+            'ã',
+            'ä',
+            'é',
+            'è',
+            'ê',
+            'ë',
+            'í',
+            'ì',
+            'î',
+            'ï',
+            'ó',
+            'ò',
+            'ô',
+            'õ',
+            'ö',
+            'ú',
+            'ù',
+            'û',
+            'ü',
+            'ç',
+            'Á',
+            'À',
+            'Â',
+            'Ã',
+            'Ä',
+            'É',
+            'È',
+            'Ê',
+            'Ë',
+            'Í',
+            'Ì',
+            'Î',
+            'Ï',
+            'Ó',
+            'Ò',
+            'Ô',
+            'Õ',
+            'Ö',
+            'Ú',
+            'Ù',
+            'Û',
+            'Ü',
+            'Ç',
+        ];
+        $array2 = [
+            'a',
+            'a',
+            'a',
+            'a',
+            'a',
+            'e',
+            'e',
+            'e',
+            'e',
+            'i',
+            'i',
+            'i',
+            'i',
+            'o',
+            'o',
+            'o',
+            'o',
+            'o',
+            'u',
+            'u',
+            'u',
+            'u',
+            'c',
+            'A',
+            'A',
+            'A',
+            'A',
+            'A',
+            'E',
+            'E',
+            'E',
+            'E',
+            'I',
+            'I',
+            'I',
+            'I',
+            'O',
+            'O',
+            'O',
+            'O',
+            'O',
+            'U',
+            'U',
+            'U',
+            'U',
+            'C',
+        ];
+        $string = str_replace($array1, $array2, $string);
+
+        //remove os ascentos
+        $string = iconv('UTF-8', 'US-ASCII//TRANSLIT', $string);
+
+        return $string;
     }
 
     /**
@@ -383,116 +517,5 @@ class StringUtil
         $text = preg_replace('/[0-9]{3}/', $replacement, $text);
 
         return $text;
-    }
-
-    /**
-     * @param $string
-     *
-     * @return string
-     */
-    public static function removeAccents($string)
-    {
-        $array1 = [
-            'á',
-            'à',
-            'â',
-            'ã',
-            'ä',
-            'é',
-            'è',
-            'ê',
-            'ë',
-            'í',
-            'ì',
-            'î',
-            'ï',
-            'ó',
-            'ò',
-            'ô',
-            'õ',
-            'ö',
-            'ú',
-            'ù',
-            'û',
-            'ü',
-            'ç',
-            'Á',
-            'À',
-            'Â',
-            'Ã',
-            'Ä',
-            'É',
-            'È',
-            'Ê',
-            'Ë',
-            'Í',
-            'Ì',
-            'Î',
-            'Ï',
-            'Ó',
-            'Ò',
-            'Ô',
-            'Õ',
-            'Ö',
-            'Ú',
-            'Ù',
-            'Û',
-            'Ü',
-            'Ç',
-        ];
-        $array2 = [
-            'a',
-            'a',
-            'a',
-            'a',
-            'a',
-            'e',
-            'e',
-            'e',
-            'e',
-            'i',
-            'i',
-            'i',
-            'i',
-            'o',
-            'o',
-            'o',
-            'o',
-            'o',
-            'u',
-            'u',
-            'u',
-            'u',
-            'c',
-            'A',
-            'A',
-            'A',
-            'A',
-            'A',
-            'E',
-            'E',
-            'E',
-            'E',
-            'I',
-            'I',
-            'I',
-            'I',
-            'O',
-            'O',
-            'O',
-            'O',
-            'O',
-            'U',
-            'U',
-            'U',
-            'U',
-            'C',
-        ];
-        $string = str_replace($array1, $array2, $string);
-
-        //remove os ascentos
-        $string = iconv('UTF-8', 'US-ASCII//TRANSLIT', $string);
-
-        return $string;
     }
 }
